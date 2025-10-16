@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>个人简历</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @page 
+        {
+            size: A4;
+            margin: 1.5cm;
+        }
+        body 
+        {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+            background-color: #f0f7f4;
+            color: #333;
+        }
+        .resume-container 
+        {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(76, 175, 153, 0.08);
+        }
+        h1 
+        {
+            text-align: center;
+            color: #2d6a63;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+        .title-sub 
+        {
+            text-align: center;
+            color: #4cad9d;
+            margin: 0 0 30px 0;
+            font-weight: normal;
+        }
+        .resume-table 
+        {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(76, 175, 153, 0.05);
+            transition: all 0.3s ease;
+        }
+        .resume-table:hover {
+            box-shadow: 0 5px 15px rgba(76, 175, 153, 0.1);
+        }
+        .resume-table th {
+            background: linear-gradient(135deg, #4cad9d 0%, #2d6a63 100%);
+            color: #fff;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #23544e;
+        }
+        .resume-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e6f2ef;
+            vertical-align: middle;
+        }
+        .resume-table tr:last-child td {
+            border-bottom: none;
+        }
+        .resume-table tr:nth-child(even) {
+            background-color: #f7fcf9;
+        }
+        .resume-table tr:hover {
+            background-color: #eaf7f4;
+        }
+        .resume-table .merged-header {
+            background: linear-gradient(135deg, #2d6a63 0%, #1a4741 100%);
+            text-align: center;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        .resume-table .section-title 
+        {
+            background-color: #4cad9d;
+            color: white;
+            font-weight: 600;
+        }
+        .icon-section 
+        {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+        .icon-box
+        {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(76, 175, 153, 0.05);
+        }
+        .icon-box h3 
+        {
+            color: #2d6a63;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #a1d9ce;
+        }
+        .icon-list 
+        {
+            list-style: none;
+            padding: 0;
+        }
+        .icon-list li 
+        {
+            padding: 8px 0;
+            border-bottom: 1px dashed #e6f2ef;
+            display: flex;
+            align-items: center;
+        }
+        .icon-list li:last-child 
+        {
+            border-bottom: none;
+        }
+        .icon-list i 
+        {
+            color: #2d6a63;
+            margin-right: 10px;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+        .self-evaluation 
+        {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(76, 175, 153, 0.05);
+        }
+        .self-evaluation h3 
+        {
+            color: #2d6a63;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #a1d9ce;
+        }
+        .self-evaluation p 
+        {
+            line-height: 1.8;
+            text-align: justify;
+            color: #555;
+        }
+        .photo-cell 
+        {
+            text-align: center;
+        }
+        .profile-photo 
+        {
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 5px solid #f7fcf9;
+            box-shadow: 0 3px 10px rgba(76, 175, 153, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <h1>个人简历</h1>
+        <p class="title-sub">Personal Resume</p>
+        <table class="resume-table">
+            <tr>
+                <th class="merged-header" colspan="6">基本信息</th>
+            </tr>
+            <tr>
+                <th width="15%">姓名</th>
+                <td width="20%">李炅馨</td>
+                <th width="15%">出生年月</th>
+                <td width="20%">2006.10</td>
+                <th width="15%" class="photo-cell" rowspan="4">
+                    <img src="./照片.jpg" alt="个人照片" class="profile-photo">
+                </th>
+                <td width="15%" rowspan="4"></td>
+            </tr>
+            <tr>
+                <th>性别</th>
+                <td>女</td>
+                <th>政治面貌</th>
+                <td>共青团员</td>
+            </tr>
+            <tr>
+                <th>学历</th>
+                <td>本科</td>
+                <th>专业</th>
+                <td>计算机科学与技术</td>
+            </tr>
+            <tr>
+                <th>联系方式</th>
+                <td>13361211316</td>
+                <th>邮箱</th>
+                <td>2829089112@qq.com</td>
+            </tr>
+        </table>
+        <table class="resume-table">
+            <tr>
+                <th class="merged-header" colspan="4">教育经历</th>
+            </tr>
+            <tr>
+                <th>起止时间</th>
+                <th>学校名称</th>
+                <th>专业</th>
+                <th>主修课程</th>
+            </tr>
+            <tr>
+                <td>2025.09 - 2029.06</td>
+                <td>鲁东大学</td>
+                <td>计算机科学与技术（本科）</td>
+                <td>HTML5、数据结构、计算机网络、操作系统等</td>
+            </tr>
+        </table>
+        <table class="resume-table">
+            <tr>
+                <th class="merged-header" colspan="3">项目经历</th>
+            </tr>
+            <tr>
+                <th width="20%">项目名称</th>
+                <th width="20%">角色</th>
+                <th width="60%">项目描述</th>
+            </tr>
+            <tr>
+                <td>2025年软件杯大赛 - 智能校园管理系统</td>
+                <td>前端开发</td>
+                <td>
+                    1. 负责用户模块、课程管理模块的前端页面开发与交互实现；<br>
+                    2. 使用HTML5+CSS3实现响应式布局，兼容多终端访问；<br>
+                    3. 优化页面加载速度，提升用户体验。
+                </td>
+            </tr>
+        </table>
+        <div class="icon-section">
+            <div class="icon-box">
+                <h3>技能证书</h3>
+                <ol class="icon-list">
+                    <li><i class="fas fa-certificate"></i> 计算机二级（Web程序设计）</li>
+                    <li><i class="fas fa-certificate"></i> 英语四级</li>
+                    <li><i class="fas fa-code"></i> HTML5/CSS3 熟练应用</li>
+                    <li><i class="fas fa-code"></i> JavaScript 深入理解</li>
+                </ol>
+            </div>
+            <div class="icon-box">
+                <h3>兴趣爱好</h3>
+                <ol class="icon-list">
+                    <li><i class="fas fa-laptop-code"></i> web开发</li>
+                    <li><i class="fas fa-sport"></i>羽毛球、足球</li>
+                </ol>
+            </div>
+        </div>
+        <div class="self-evaluation">
+            <h3>自我评价</h3>
+            大一学年聚焦计算机科学与技术专业基础学习，同时明确 Web 应用为核心兴趣方向，形成 “理论 + 实践” 的学习模式。<br>
+            掌握 C 语言编程基础、计算机网络基础概念，Web 方向能独立完成静态网页开发，了解 HTTP 协议基本原理，具备良好的代码编写规范意识。<br>
+            积极参与校园技术社团、Web 学习小组的交流活动，主动接触行业动态，拓宽技术视野；课后坚持打卡技术练习，逐步培养逻辑思维与问题解决能力。<br>
+            学习态度端正，接受新知识速度较快，对 Web 开发的前后端技术均有探索意愿，后续将重点夯实技术基础、积累实践经验，努力成长为具备扎实功底和创新思维的 Web 方向学习者。<br>
+            <p>性格上，我兼具严谨与创新：面对技术难题能沉下心钻研，同时善于从不同角度思考解决方案。业余时间坚持长跑和围棋，培养了我的耐力与全局观。
+                <br>我期待加入一个重视技术成长的团队，在实践中不断提升自己，为项目创造价值。</p>
+        </div>
+    </div>
+</body>
+</html>
