@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书展销平台</title>
+    <style>
+        *{ /* 通配符选择器：清除所有元素默认内外边距，设置盒模型为border-box */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+         body {/* 页面主体样式：设置字体、背景色和顶部内边距（避开固定导航） */
+            font-family: "微软雅黑", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding-top: 120px; 
+        }
+        .top-nav { /* 顶部导航栏：固定在页面顶部，设置高度、背景和阴影 */
+            width: 100%;
+            height: 80px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 0 50px;
+            display: flex; /* 弹性布局 */
+            align-items: center; /* 垂直居中 */
+            justify-content: space-between; /* 水平两端对齐 */
+            position: fixed; /* 固定定位 */
+            top: 0;
+            left: 0;
+            z-index: 1000; /* 层级最高，避免被遮挡 */
+        }
+        .fixed-directory { /* 固定目录栏：位于顶部导航下方 */
+            width: 100%;
+            height: 40px;
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            position: fixed;
+            top: 80px; /* 位于顶部导航下方 */
+            left: 0;
+            z-index: 999; /* 层级低于顶部导航 */
+            padding: 0 50px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .directory-list { /* 目录列表：清除默认样式，使用弹性布局 */
+            list-style: none;
+            display: flex;
+            height: 100%;
+            align-items: center; /* 垂直居中 */
+            gap: 25px; /* 列表项间距 */
+        }
+        .directory-item {  /* 目录列表项样式 */
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.2s; /* 过渡动画 */
+        }
+        .directory-item:hover {/* 目录项 hover 效果 */
+            background-color: #f5f7fa;
+            color: #4ecdc4;
+        }
+        .directory-item.active {/* 目录项激活状态（当前页） */
+            color: #4ecdc4;
+            font-weight: bold;
+            border-bottom: 2px solid #4ecdc4;
+        }
+        .logo {/* Logo样式：使用弹性布局 */
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {/* Logo图标样式 */
+            width: 36px;
+            height: 36px;
+            background-color: #4ecdc4;
+            border-radius: 6px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        } 
+        .search-box {/* 搜索框容器：弹性布局 */
+            display: flex;
+            width: 400px;
+        }
+        .search-input {/* 搜索输入框样式 */
+            flex-grow: 1; /* 占满剩余宽度 */
+            height: 40px;
+            padding: 0 15px;
+            border: 2px solid #4ecdc4;
+            border-right: none; /* 右侧无边框，与按钮衔接 */
+            border-radius: 4px 0 0 4px;
+            outline: none; /* 取消聚焦边框 */
+        }
+        .search-btn {/* 搜索按钮样式 */
+            width: 80px;
+            height: 40px;
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .user-actions { /* 用户操作区：弹性布局 */
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        .user-actions a {  /* 用户操作区链接样式 */
+            color: #333;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        .cart-icon {/* 购物车图标容器：相对定位（用于数量标记） */
+            position: relative;
+        }
+        .cart-count { /* 购物车数量标记：绝对定位在图标右上角 */
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff6b6b;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 18px;
+            text-align: center;
+        }
+        .main-container {/* 主容器：弹性布局包含三部分内容 */
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            gap: 20px;
+        }
+        .category-nav {/* 左侧分类导航：固定宽度，不收缩 */
+            width: 200px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px 0;
+            flex-shrink: 0; /* 不收缩 */
+        }
+        .category-title {/* 分类标题样式 */
+            padding: 0 20px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #f1f1f1;
+            margin-bottom: 15px;
+        }
+        .category-list {/* 分类列表：清除默认样式 */
+            list-style: none;
+        }
+        .category-item {/* 分类列表项样式 */
+            padding: 12px 20px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .category-item:hover { /* 分类项 hover 效果 */
+            background-color: #f8fafc;
+        }
+        .category-item.active {/* 分类项激活状态 */
+            background-color: #e6f7f5;
+            color: #4ecdc4;
+            font-weight: 500;
+        }
+        .category-item.active::before { /* 激活状态左侧标记线 */
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #4ecdc4;
+        } 
+        .category-item::after {/* 分类项右侧箭头 */
+            content: "→";
+            position: absolute;
+            right: 20px;
+            font-size: 12px;
+            color: #ccc;
+        }
+        .content-area { /* 中间内容区：占满剩余宽度，垂直布局 */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .banner-carousel {/* 轮播图容器：固定高度，相对定位 */
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden; /* 隐藏溢出内容 */
+            position: relative;
+            background-color: #f0f5f5;
+        }
+        .carousel-slide { /* 轮播图幻灯片：绝对定位，默认隐藏 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .carousel-slide.active {/* 激活的幻灯片：显示 */
+            display: block;
+        }
+        .carousel-slide img { /* 轮播图图片样式 */
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 保持比例显示完整 */
+            object-position: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .carousel-text { /* 轮播图文字区域：绝对定位在底部 */
+            position: absolute;
+            bottom: 30px;
+            left: 50px;
+            color: #333;
+            max-width: 400px;
+            background-color: rgba(255,255,255,0.8); /* 半透明白色背景 */
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .carousel-title {/* 轮播图标题 */
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .carousel-desc { /* 轮播图描述 */
+            font-size: 15px;
+            margin-bottom: 15px;
+            line-height: 1.6; /* 行高增强可读性 */
+        }
+        .carousel-btn { /* 轮播图按钮 */
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .books-section {/* 图书展示区：白色背景，带阴影 */
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .section-title {/* 区域标题样式 */
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            align-items: center;
+        }
+        .section-title::before { /* 标题前的彩色标记 */
+            content: "";
+            width: 4px;
+            height: 18px;
+            background-color: #4ecdc4;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+        .books-grid {/* 图书网格布局：4列 */
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4列等宽 */
+            gap: 25px;
+        }
+        .book-card {/* 图书网格布局：4列 */
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s; /* 悬停动画 */
+        }
+        .book-card:hover {/* 图书卡片 hover 效果：上移5px */
+            transform: translateY(-5px);
+        }
+        .book-img {/* 图书图片样式 */
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .book-tag {/* 图书标签样式 */
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+        }
+        .tag-bestsell {/* 畅销标签样式 */
+            background-color: #fff0f0;
+            color: #e74c3c;
+        }
+        .tag-new {/* 新品标签样式 */
+            background-color: #e8f4fd;
+            color: #3498db;
+        }
+        .book-name { /* 图书名称样式 */
+            font-weight: 500;
+            margin-bottom: 8px;
+            height: 40px; /* 固定高度防止布局错乱 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-price {/* 图书价格样式 */
+            color: #e74c3c; /* 红色突出价格 */
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .add-cart-btn { /* 加入购物车按钮 */
+            background-color: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .add-cart-btn:hover {/* 购物车按钮 hover 效果 */
+            background-color: #3dbbaf; /* 深色变化 */
+        }
+        .sidebar {/* 右侧边栏：固定宽度，垂直布局 */
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+        .sidebar-card {/* 边栏卡片样式 */
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .sidebar-title {/* 边栏标题样式 */
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .promotion-item { /* 促销信息项样式 */
+            background-color: #fff8e6; /* 浅橙色背景 */
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .promotion-title { /* 促销标题 */
+            color: #e67e22; /* 橙色文字 */
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .promotion-desc {/* 促销描述 */
+            font-size: 13px;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+        .rank-list {/* 排行榜列表：清除默认样式 */
+            list-style: none;
+        }
+        .rank-item { /* 排行榜项样式 */
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f1f1; /* 分隔线 */
+        }
+        .rank-item:last-child {/* 最后一项无分隔线 */
+            border-bottom: none;
+        }
+        .rank-num {/* 排名数字样式 */
+            width: 24px;
+            height: 24px;
+            background-color: #f1f1f1;
+            color: #7f8c8d;
+            border-radius: 50%; /* 圆形 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .rank-num.top3 {/* 前三名排名样式 */
+            background-color: #4ecdc4;
+            color: white;
+        }
+        .rank-info { /* 排名信息区域 */
+            flex-grow: 1;
+        }
+        .rank-name {/* 排名图书名称 */
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        .rank-sales { /* 排名销量 */
+            font-size: 12px;
+            color: #999;
+        }
+        .footer { /* 页脚样式 */
+            background-color: #333; /* 深色背景 */
+            color: #999;
+            padding: 40px 50px 20px;
+            margin-top: 40px;
+        }
+        .footer-links {/* 页脚链接区域：弹性布局 */
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .footer-col h4 {/* 页脚列标题 */
+            color: white;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .footer-col ul {/* 页脚列表：清除默认样式 */
+            list-style: none;
+        }
+        .footer-col li { /* 页脚列表项 */
+            margin-bottom: 8px;
+        }
+        .footer-col a {/* 页脚链接样式 */
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .footer-col a:hover {/* 页脚链接 hover 效果 */
+            color: white;
+        }
+        .copyright {/* 版权信息 */
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 12px;
+        }
+        .toast {/* 加入购物车提示框：默认隐藏 */
+            position: fixed;
+            top: 130px;
+            right: 20px;
+            background-color: #4ecdc4;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .back-to-top {/* 返回顶部按钮：默认隐藏 */
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            background-color: #4ecdc4;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            z-index: 90;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .back-to-top.show {/* 显示返回顶部按钮 */
+            display: block;
+        }
+    </style>
+</head>
+<body><!-- 页面主体内容 -->
+    
+    <div class="toast" id="toast">已加入购物车</div><!-- 加入购物车提示框 -->
+    <div class="top-nav">  <!-- 顶部导航栏 -->
+        <div class="logo"> <!-- Logo区域 -->
+            <div class="logo-icon">📚</div> <!-- 图书图标 -->
+            图书展销平台 <!-- 网站名称 -->
+        </div>
+        <div class="search-box"><!-- 搜索框 -->
+            <input type="text" class="search-input" placeholder="搜索图书、作者、分类...">
+            <button class="search-btn">搜索</button>
+        </div>
+        <div class="user-actions"><!-- 用户操作区 -->
+            <a href="#">消息</a>
+            <a href="#">设置</a>
+            <a href="#">欢迎，用户56789</a>
+            <a href="#" class="cart-icon"><!-- 购物车 -->
+                🛒 <!-- 购物车图标 -->
+                <span class="cart-count">0</span> <!-- 购物车数量 -->
+            </a>
+        </div>
+    </div>
+    <div class="fixed-directory"><!-- 固定目录栏 -->
+        <ul class="directory-list">
+            <li class="directory-item active">首页</li>
+            <li class="directory-item">全部图书</li>
+            <li class="directory-item">新书上市</li>
+            <li class="directory-item">畅销榜单</li>
+            <li class="directory-item">特惠活动</li>
+            <li class="directory-item">出版社专区</li>
+            <li class="directory-item">作者访谈</li>
+            <li class="directory-item">阅读推荐</li>
+        </ul>
+    </div>
+    <div class="main-container"> <!-- 主内容容器 -->
+        <div class="category-nav"><!-- 左侧分类导航 -->
+            <div class="category-title">图书分类导航</div>
+            <ul class="category-list">
+                <li class="category-item">文学小说</li>
+                <li class="category-item active">历史传记</li>
+                <li class="category-item">社会科学</li>
+                <li class="category-item">艺术设计</li>
+                <li class="category-item">计算机技术</li>
+                <li class="category-item">经济管理</li>
+                <li class="category-item">教育心理</li>
+                <li class="category-item">医学健康</li>
+                <li class="category-item">生活休闲</li>
+            </ul>
+        </div>
+        <div class="content-area"> <!-- 中间内容区 -->
+            <div class="banner-carousel"><!-- 轮播图 -->
+                <div class="carousel-slide active"> <!-- 轮播图1（默认显示） -->
+                    <img src="./艺术设计.jpg" alt="新书上市">
+                    <div class="carousel-text">
+                        <div class="carousel-title">新书上市</div>
+                        <div class="carousel-desc">2025年度精选新书，限时8折起，抢先体验阅读盛宴</div>
+                        <button class="carousel-btn">立即查看</button>
+                    </div>
+                </div>
+                <div class="carousel-slide"> <!-- 轮播图2 -->
+                    <img src="./文学小说.jpg" alt="文学盛宴">
+                    <div class="carousel-text">
+                        <div class="carousel-title">文学盛宴</div>
+                        <div class="carousel-desc">经典文学作品限时特惠，带你领略文字之美</div>
+                        <button class="carousel-btn">立即抢购</button>
+                    </div>
+                </div>
+                <div class="carousel-slide"><!-- 轮播图3 -->
+                    <img src="./计算机技术.jpg" alt="科技前沿">
+                    <div class="carousel-text">
+                        <div class="carousel-title">科技前沿</div>
+                        <div class="carousel-desc">最新计算机技术书籍，助你掌握行业动态</div>
+                        <button class="carousel-btn">了解更多</button>
+                    </div>
+                </div>
+            </div>
+            <div class="books-section"><!-- 热门推荐图书区 -->
+                <div class="section-title">热门推荐图书</div>
+                <div class="books-grid">
+                    <div class="book-card"> <!-- 图书1 -->
+                        <span class="book-tag tag-bestsell">畅销</span>
+                        <img src="./文学小说.jpg" alt="我与地坛" class="book-img">
+                        <div class="book-name">我与地坛</div>
+                        <div class="book-price">¥40.00</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>
+                    <div class="book-card"> <!-- 图书2 -->
+                        <span class="book-tag tag-new">新品</span>
+                        <img src="./社会科学.jpg" alt="社会科学的逻辑" class="book-img">
+                        <div class="book-name">社会科学的逻辑</div>
+                        <div class="book-price">¥31.60</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>
+                    <div class="book-card"> <!-- 图书3 -->
+                        <span class="book-tag tag-bestsell">畅销</span>
+                        <img src="./计算机技术.jpg" alt="Python编程" class="book-img">
+                        <div class="book-name">Python编程从入门到实践</div>
+                        <div class="book-price">¥54.80</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>
+                    <div class="book-card"> <!-- 图书4 -->
+                        <span class="book-tag tag-new">新品</span>
+                        <img src="./历史传记.jpg" alt="史记精选" class="book-img">
+                        <div class="book-name">人物传记</div>
+                        <div class="book-price">¥136.00</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>
+                </div>
+            </div> 
+            <div class="books-section"><!-- 新书上市区 -->
+                <div class="section-title">新书上市</div>
+                <div class="books-grid"> 
+                    <div class="book-card"><!-- 图书5 -->
+                        <img src="./教育心理.jpg" alt="教育中的心理反应" class="book-img">
+                        <div class="book-name">教育中的心理反应</div>
+                        <div class="book-price">¥28.00</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>
+                        <div class="book-card"><!-- 图书6 -->
+                        <img src="./艺术设计.jpg" alt="DK艺术设计百科" class="book-img">
+                        <div class="book-name">DK艺术设计百科</div>
+                        <div class="book-price">¥32.00</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>            
+                    <div class="book-card"><!-- 图书7 -->
+                        <img src="./经济管理.jpg" alt="涛动周期论" class="book-img">
+                        <div class="book-name">涛动周期论</div>
+                        <div class="book-price">¥32.00</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>                
+                    <div class="book-card"><!-- 图书8 -->
+                        <img src="./生活休闲.jpg" alt="每条弯路都通向自我" class="book-img">
+                        <div class="book-name">每条弯路都通向自我</div>
+                        <div class="book-price">¥25.00</div>
+                        <button class="add-cart-btn">加入购物车</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar"><!-- 右侧边栏 -->
+                <div class="sidebar-card"><!-- 限时满减 -->
+                <div class="sidebar-title">限时满减</div>
+                <div class="promotion-item">
+                    <div class="promotion-title">满100减20</div>
+                    <div class="promotion-desc">全场图书满100元自动减20元，可叠加使用</div>
+                </div>
+                <div class="promotion-item">
+                    <div class="promotion-title">满200减50</div>
+                    <div class="promotion-desc">全场图书满200元自动减50元，优惠力度更大</div>
+                </div>
+                <div class="promotion-item">
+                    <div class="promotion-title">满300减80</div>
+                    <div class="promotion-desc">全场图书满300元自动减80元，超值优惠</div>
+                </div>
+            </div>
+            <div class="sidebar-card"><!-- 热销榜单 -->
+                <div class="sidebar-title">热销榜单</div>
+                <ul class="rank-list">
+                    <li class="rank-item">
+                        <div class="rank-num top3">1</div>
+                        <div class="rank-info">
+                            <div class="rank-name">我与地坛</div>
+                            <div class="rank-sales">销量：1256</div>
+                        </div>
+                    </li>
+                    <li class="rank-item">
+                        <div class="rank-num top3">2</div>
+                        <div class="rank-info">
+                            <div class="rank-name">Python编程入门到精通</div>
+                            <div class="rank-sales">销量：987</div>
+                        </div>
+                    </li>
+                    <li class="rank-item">
+                        <div class="rank-num top3">3</div>
+                        <div class="rank-info">
+                            <div class="rank-name">DK艺术设计百科</div>
+                            <div class="rank-sales">销量：854</div>
+                        </div>
+                    </li>
+                    <li class="rank-item">
+                        <div class="rank-num">4</div>
+                        <div class="rank-info">
+                            <div class="rank-name">社会科学的逻辑</div>
+                            <div class="rank-sales">销量：752</div>
+                        </div>
+                    </li>
+                    <li class="rank-item">
+                        <div class="rank-num">5</div>
+                        <div class="rank-info">
+                            <div class="rank-name">涛动周期论</div>
+                            <div class="rank-sales">销量：632</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="sidebar-card"><!-- 会员福利 -->
+                <div class="sidebar-title">会员福利</div>
+                <div class="promotion-item">
+                    <div class="promotion-title">会员专享价</div>
+                    <div class="promotion-desc">所有图书享会员专属价格，比市场价低10%-30%</div>
+                </div>
+                <div class="promotion-item">
+                    <div class="promotion-title">积分兑换</div>
+                    <div class="promotion-desc">会员积分可直接兑换图书，100积分=1元</div>
+                </div>
+                <div class="promotion-item">
+                    <div class="promotion-title">生日特权</div>
+                    <div class="promotion-desc">会员生日当月可享全场7折优惠，不限金额</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="back-to-top" id="backToTop">↑</button><!-- 返回顶部按钮 -->    
+</body>
+</html>
