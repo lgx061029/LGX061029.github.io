@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>数字图书展销平台-实验5</title>
+    <style>
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "微软雅黑", sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .form-container {
+            width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.1); 
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+     
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+      
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 15px;
+        }
+     
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+   
+        input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #fff;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+        }
+        button[type="reset"] {
+            background-color: #6c757d;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3); 
+        }
+ 
+        ::placeholder {
+            color: #999;
+            font-size: 13px;
+        }
+     
+        :-ms-input-placeholder {
+            color: #999;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>图书推荐订阅表单</h2>
+        <form action="#" method="post" enctype="multipart/form-data">
+          
+            <div class="form-group">
+                <label for="username">用户名：</label>
+                <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码：</label>
+                <input type="password" id="password" name="password" placeholder="请输入密码" required>
+            </div>
+            <div class="form-group">
+                <label for="email">邮箱：</label>
+                <input type="email" id="email" name="email" placeholder="请输入邮箱" required>
+            </div>
+            <div class="form-group">
+                <label>性别：</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="gender" value="male" checked> 男</label>
+                    <label><input type="radio" name="gender" value="female"> 女</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>图书兴趣：</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="interest" value="novel"> 小说</label>
+                    <label><input type="checkbox" name="interest" value="tech"> 技术</label>
+                    <label><input type="checkbox" name="interest" value="history"> 历史</label>
+                    <label><input type="checkbox" name="interest" value="art"> 艺术</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="city">所在城市：</label>
+                <select id="city" name="city" required>
+                    <option value="">请选择城市</option>
+                    <option value="beijing">青岛</option>
+                    <option value="shanghai">济南</option>
+                    <option value="guangzhou">淄博</option>
+                    <option value="guangzhou">枣庄</option>
+                    <option value="guangzhou">东营</option>
+                    <option value="guangzhou">烟台</option>
+                    <option value="guangzhou">潍坊</option>
+                    <option value="guangzhou">济宁</option>
+                    <option value="guangzhou">泰安</option>
+                    <option value="guangzhou">威海</option>
+                    <option value="guangzhou">日照</option>
+                    <option value="guangzhou">临沂</option></var>
+                    <option value="guangzhou">德州</option>
+                    <option value="guangzhou">聊城</option>
+                    <option value="guangzhou">滨州</option>
+                    <option value="guangzhou">菏泽</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="book-category">图书分类：</label>
+                <select id="book-category" name="book-category" required>
+                    <option value="">请选择分类</option>
+                    <option value="programming">编程</option>
+                    <option value="literature">文学</option>
+                    <option value="science">科学</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">订阅说明：</label>
+                <textarea id="description" name="description" placeholder="请输入您的订阅需求..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="avatar">上传头像：</label>
+                <input type="file" id="avatar" name="avatar">
+            </div>
+            <div class="btn-group">
+                <button type="submit">提交订阅</button>
+                <button type="reset">重置表单</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
